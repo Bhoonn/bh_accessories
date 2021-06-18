@@ -223,6 +223,12 @@ local function Connect_To_DB()
 						reali = reali - 1
 						continue
 					end
+                    
+                    for k,v in pairs(o) do
+                        if v == "NULL" then
+                            o[k] = nil
+                        end
+                    end
 
 					edited_acc[reali] = {
 						name = o.name,
