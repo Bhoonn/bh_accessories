@@ -411,6 +411,7 @@ local function PModelAdjust()
         t.scale = Vector(net_ReadFloat(), net_ReadFloat(), net_ReadFloat())
     end
 
+    local offsets = BH_ACC.ModelOffsets
 	if offsets[model] then
 		offsets[model][bone] = t
 	else
