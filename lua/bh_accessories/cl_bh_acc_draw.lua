@@ -394,8 +394,6 @@ end
 hook.Add( "PostDrawTranslucentRenderables", "BH_ACC_Equipped_Accessories", DrawRagdollEquipped)
 
 local function DrawEquippedPPD(ply)
-    BH_ACC.HandleRequestPlayerSync(ply)
-
     local csms = ply.bh_acc_equipped_csms
 
 	if not Alive(ply) or not csms then return end

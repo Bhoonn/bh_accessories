@@ -111,15 +111,13 @@ local function OpenMenu()
 end
 net_Receive("BH_ACC_OpenMenu", OpenMenu)
 
-function BH_ACC.HandleRequestPlayerSync(ply)
-    if not ply.bh_acc_equipped_csms and (not ply.BH_ACC_delay or ply.BH_ACC_delay < CurTime()) and ply ~= myself then
-        ply.BH_ACC_delay = CurTime() + BH_ACC.NetDelay
+hook.Add("OnEntityCreated", "BH_ACC_EntityCreatePlayerSync", function(ent)
+    if not ent:IsPlayer() then return end
 
-        net_Start("BH_ACC_RequestSyncPlayer")
-        WritePlayer(ply)
-        net_SendToServer()
-    end
-end
+    net_Start("BH_ACC_RequestSyncPlayer")
+    WritePlayer(ent)
+    net_SendToServer()
+end)
 
 local function GetPlayersData()
     local ply = ReadPlayer()
