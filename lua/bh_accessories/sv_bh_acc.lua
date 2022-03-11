@@ -108,19 +108,37 @@ local function RequestSync(len, ply)
 end
 net_Receive("BH_ACC_RequestSync", RequestSync)
 
+local function SendTargetData(ply, target)
+	net_Start("BH_ACC_RequestSyncPlayer")
+	WritePlayer(target)
+	WriteEquippedData(target)
+	WriteAdjustmentData(target)
+	net_Send(ply)
+end
+
+local timer_Simple = timer.Simple
+local function CheckTargetReady(ply, target)
+	if target.bh_acc_syncready then
+		SendTargetData(ply, target)
+	else
+		local function Timer()
+			if IsValid(ply) and IsValid(target) then
+				CheckTargetReady(ply, target)
+			end
+		end
+		timer_Simple(1, Timer)
+	end
+end
+
 local function RequestSyncPlayer(len, ply)
 	local target = BH_ACC.ReadPlayer()
 
-	if not target or not IsValid(target) or target == ply or not target.bh_acc_equipped then return end
+	if not IsValid(target) or not target:IsPlayer() or target == ply then return end
     
 	if ply.BH_ACC_SyncRequests and ply.BH_ACC_SyncRequests[target] then return end
 	ply.BH_ACC_SyncRequests = ply.BH_ACC_SyncRequests or {[target] = true}
 
-	net_Start("BH_ACC_RequestSyncPlayer")
-    WritePlayer(target)
-	WriteEquippedData(target)
-	WriteAdjustmentData(target)
-	net_Send(ply)
+	CheckTargetReady(ply, target)
 end
 net_Receive("BH_ACC_RequestSyncPlayer", RequestSyncPlayer)
 

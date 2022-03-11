@@ -288,8 +288,8 @@ local function Connect_To_DB()
 	db.onConnected = onConnected
 
     local function onConnectionFailed(db, msg)
-		db("Failed to connect to the database.")
-		dbprint(msg)
+		dbprint("Failed to connect to the database.", BH_ACC.ChatTagColors["error"])
+		dbprint(msg, BH_ACC.ChatTagColors["error"])
     end
 	db.onConnectionFailed = onConnectionFailed
     
@@ -331,6 +331,8 @@ local function LoadPlayerAccessories(ply)
 
 	local esc_sid = DBEscape(SteamID64(ply))
 
+	local queries_finished = 0
+
 	local function query1(q, data)
 		local reali = 0
 		for _, v in ipairs(data) do
@@ -345,6 +347,11 @@ local function LoadPlayerAccessories(ply)
 
 			owned[reali] = id
 			owned_lookup[id] = reali
+		end
+
+		queries_finished = queries_finished + 1
+		if queries_finished == 2 then
+			ply.bh_acc_syncready = true
 		end
 	end
 	Query("SELECT `name` FROM `bh_accessories_owned` WHERE `steamid` = " .. esc_sid, query1)
@@ -364,6 +371,11 @@ local function LoadPlayerAccessories(ply)
 
 			equipped[reali] = id
 			equipped_lookup[id] = reali
+		end
+
+		queries_finished = queries_finished + 1
+		if queries_finished == 2 then
+			ply.bh_acc_syncready = true
 		end
 	end
 	Query("SELECT `name` FROM `bh_accessories_equipped` WHERE `steamid` = " .. esc_sid, query2)
