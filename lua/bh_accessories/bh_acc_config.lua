@@ -133,7 +133,7 @@ BH_ACC.Allowed_Ranks = {
 --
 
 -- This is how much the items can be bought for ( price * 0.5 ) --
-BH_ACC.BuyFraction = 0.5
+BH_ACC.BuyFraction = 1
 --
 
 -- Buy fraction for ranks/usergroups --
